@@ -6,6 +6,7 @@ A python library to track fibre in a volume
 Project Organization
 --------------------
 
+```
 ├── LICENSE 			<- MIT license
 ├── Makefile 			<- Makefile with commands like `make environment` or `make requirements`
 ├── README.md		<- Readme file for using the repository
@@ -26,6 +27,7 @@ Project Organization
 │   └── Fibre_tracking.ipynb <- Notebook to do fibretracking
 ├── requirements.txt		<- The requirements file for reproducing the analysis environment
 └── setup.py			<- makes project pip installable (pip install -e .) so fibretracker library can be imported
+```
 
 ## 💻 Getting Started
 
