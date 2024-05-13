@@ -7,24 +7,24 @@ Project Organization
 --------------------
 
 ```
-├── LICENSE 			<- MIT license
-├── Makefile 			<- Makefile with commands like `make environment` or `make requirements`
+├── LICENSE 		<- MIT license
+├── Makefile 		<- Makefile with commands like `make environment` or `make requirements`
 ├── README.md		<- Readme file for using the repository
 ├── data
-│   └── examples		<- Small dataset for fibre tracking [Soon Available!!]
-├── docs				<- for documentation [soon available!!]
+│   └── examples	<- Small dataset for fibre tracking [Soon Available!!]
+├── docs		<- for documentation [soon available!!]
 ├── fibretracker
-│   ├── __init__.py			<- Makes fibretracker a Python module (call all modules)
-│   ├── io				<- Scripts to load data
+│   ├── __init__.py	<- Makes fibretracker a Python module (call all modules)
+│   ├── io		<- Scripts to load data
 │   │   └── read_file.py
-│   ├── models			<- Scripts for fibre detection and tracking
+│   ├── models		<- Scripts for fibre detection and tracking
 │   │   ├── detector.py
 │   │   └── tracker.py
-│   └── viz				<- Scripts to visualize the slice, detected slice, tracked fibres
+│   └── viz		<- Scripts to visualize the slice, detected slice, tracked fibres
 │       ├── plotting.py
 │       └── visualize.py
 ├── notebooks
-│   └── Fibre_tracking.ipynb <- Notebook to do fibretracking
+│   └── Fibre_tracking.ipynb 	<- Notebook to do fibretracking
 ├── requirements.txt		<- The requirements file for reproducing the analysis environment
 └── setup.py			<- makes project pip installable (pip install -e .) so fibretracker library can be imported
 ```
