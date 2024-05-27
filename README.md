@@ -59,10 +59,10 @@ Go to `notebooks/fibre_tracking.ipynb` and run the notebook with `fibretracker` 
 
 ### Data 
 
-Following are the dataset on which fibre tracking is tested
+Following are the dataset on which fibre tracking is tested with size 250x500x500
 
-* Mock and UD [[link](https://zenodo.org/records/5483719)] - `UD-01_FoV_2_B2_recon.txm` and `Mock-01_FoV_2_B2_recon.txm` (tested on 150 slices)
-* GFRP [[link](https://zenodo.org/records/4771123)] - `GFRP_Initial.zip` (tested on 150 slices)
-* SRCT [[link](https://zenodo.org/records/1195879)] - `SRCT.zip` (61 slices available)
+* Mock and UD [[link](https://zenodo.org/records/5483719)] - `UD-01_FoV_2_B2_recon.txm` and `Mock-01_FoV_2_B2_recon.txm`
+* GFRP [[link](https://zenodo.org/records/4771123)] - `GFRP_Initial.zip`
+* SRCT [[link](https://zenodo.org/records/1195879)] - `XCT_L.zip` 
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
