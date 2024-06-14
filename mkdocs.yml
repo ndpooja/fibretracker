@@ -1,0 +1,105 @@
+site_name: FibreTracker
+docs_dir: ./docs
+site_url: https://ndpooja.github.io/fibretracker
+site_author: FibreTracker Team
+site_description: Documentation of FibreTracker python package. FibreTracker is a tool for tracking and visualizing fibre tracks in fibre composites. 
+repo_url: https://github.com/ndpooja/fibretracker
+
+# copyright: Copyright &copy; 2024 
+
+
+nav:
+  - Home: index.md
+  - Modules:
+    - Reading Data: io.md
+    - Fibre Detection: detector.md
+    - Fibre Tracking: tracker.md
+    - Visualisation: viz.md
+  - Example: notebooks/fibre_tracking.ipynb
+  - FAQ: faq.md
+
+  - Version: CHANGELOG.md
+
+
+theme:
+  language: en
+  name: material
+  favicon: figures/trackicon.png
+  logo: figures/fibretracker.png
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: light blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.indexes
+    - navigation.footer
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.action.view
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins: 
+    - tags
+    - search 
+    - mkdocs-jupyter
+    - mkdocstrings:
+        handlers:
+          python:
+            paths:
+              - fibretracker
+            options:    
+              show_root_heading: true
+              show_source: true
+              show_root_full_path: true
+              show_object_full_path: true
+              show_symbol_type_heading: true
+              show_symbol_type_toc: true
+              separate_signature: true
+
+extra:
+  social:
+    - icon: material/email
+      link: mailto:pooja@dtu.dk
+    - icon: fontawesome/brands/github
+      link: https://github.com/ndpooja
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/kpooja27/
+  

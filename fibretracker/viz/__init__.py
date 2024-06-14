@@ -1,2 +1,2 @@
-from .visualize import slices, slicer, orthogonal
+from .visualize import orthogonal, slicer
 from .plotting import plot_tracks

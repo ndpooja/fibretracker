@@ -1,2 +1,2 @@
-from .detector import blob_detector, gaussian_filter, weighted_average_coords, get_coords
-from .tracker import track_fibres, trackpoints
+from .detector import gauss_filter, blob_centre_detector, get_fibre_coords, avg_fibre_coord
+from .tracker import track_fibres

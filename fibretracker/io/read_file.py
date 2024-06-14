@@ -8,22 +8,21 @@ Example:
     ```
     import fibretracker
     data = fibretracker.io.load("image.tif")
-    vol = fibretracker.io.load(data_path2, contains='.tif') # Load a stack of TIF files
+    vol = fibretracker.io.load(data_path, contains='.tif') # Load a stack of TIF files
     ```
 
 """
 
 import difflib
 import os
-import re
-import struct
-from pathlib import Path
+# import re
+# import struct
+# from pathlib import Path
 
-# import dask.array as da
+
 import h5py
 import nibabel as nib
 import numpy as np
-# import olefile
 import pydicom
 import tifffile
 from PIL import Image, UnidentifiedImageError
@@ -65,7 +64,6 @@ class DataLoader:
                 changed to warning and dataloader tries to load the file. Default is False.
             dim_order (tuple, optional): The order of the dimensions in the volume. Default is (2,1,0) which corresponds to (z,y,x)
         """
-        # self.virtual_stack = kwargs.get("virtual_stack", False)
         self.dataset_name = kwargs.get("dataset_name", None)
         self.return_metadata = kwargs.get("return_metadata", False)
         self.contains = kwargs.get("contains", None)
@@ -88,7 +86,7 @@ class DataLoader:
 
         vol = tifffile.imread(path, key=range(series) if series > 1 else None)
 
-        # log.info("Loaded shape: %s", vol.shape)
+        print("Loaded shape: ", vol.shape)
 
         return vol
 
@@ -126,10 +124,6 @@ class DataLoader:
 
         # Only one dataset was found
         if len(datasets) == 1:
-            # if self.dataset_name:
-            #     log.info(
-            #         "'dataset_name' argument is unused since there is only one dataset in the file"
-            #     )
             name = datasets[0]
             vol = f[name]
 
@@ -161,12 +155,11 @@ class DataLoader:
         else:
             raise ValueError(f"Did not find any data in the file: {path}")
 
-        # if not self.virtual_stack:
         vol = vol[()]  # Load dataset into memory
         f.close()
 
-        # log.info("Loaded the following dataset: %s", name)
-        # log.info("Loaded shape: %s", vol.shape)
+        print("Loaded the following dataset: ", name)
+        print("Loaded shape: ", vol.shape)
 
         if self.return_metadata:
             return vol, metadata
@@ -218,11 +211,10 @@ class DataLoader:
             [os.path.join(path, file) for file in tiff_stack], out="memmap"
         )
 
-        # if not self.virtual_stack:
         vol = np.copy(vol)  # Copy to memory
 
-        # log.info("Found %s file(s)", len(tiff_stack))
-        # log.info("Loaded shape: %s", vol.shape)
+        print(f"Found %s file(s)", len(tiff_stack))
+        print(f"Loaded shape: %s", vol.shape)
 
         return vol
 
@@ -248,44 +240,6 @@ class DataLoader:
                 "The library dxchange is required to load TXRM files. Please find installation instructions at https://dxchange.readthedocs.io/en/latest/source/install.html"
             )
 
-        # if self.virtual_stack:
-        #     if not path.endswith(".txm"):
-        #         print(
-        #             "Virtual stack is only thoroughly tested for reconstructed volumes in TXM format and is thus not guaranteed to load TXRM and XRM files correctly"
-        #         )
-
-        #     # Get metadata
-        #     ole = olefile.OleFileIO(path)
-        #     metadata = dxchange.reader.read_ole_metadata(ole)
-
-        #     # Compute data offsets in bytes for each slice
-        #     offsets = _get_ole_offsets(ole)
-
-        #     if len(offsets) != metadata["number_of_images"]:
-        #         raise ValueError(
-        #             f'Metadata is erroneous: number of images {metadata["number_of_images"]} is different from number of data offsets {len(offsets)}'
-        #         )
-
-        #     slices = []
-        #     for _, offset in offsets.items():
-        #         slices.append(
-        #             np.memmap(
-        #                 path,
-        #                 dtype=dxchange.reader._get_ole_data_type(metadata).newbyteorder(
-        #                     "<"
-        #                 ),
-        #                 mode="r",
-        #                 offset=offset,
-        #                 shape=(1, metadata["image_height"], metadata["image_width"]),
-        #             )
-        #         )
-
-        #     vol = da.concatenate(slices, axis=0)
-        #     print(
-        #         "Virtual stack volume will be returned as a dask array. To load certain slices into memory, use normal indexing followed by the compute() method, e.g. vol[:,0,:].compute()"
-        #     )
-
-        # else:
         vol, metadata = dxchange.read_txrm(path)
         vol = (
             vol.squeeze()
@@ -335,55 +289,6 @@ class DataLoader:
             numpy.ndarray: The loaded image/volume.
         """
         return np.array(Image.open(path))
-
-    # def _load_vgi_metadata(self, path):
-    #     """Helper functions that loads metadata from a VGI file
-
-    #     Args:
-    #         path (str): The path to the VGI file.
-
-    #     returns:
-    #         dict: The loaded metadata.
-    #     """
-    #     meta_data = {}
-    #     current_section = meta_data
-    #     section_stack = [meta_data]
-
-    #     should_indent = True
-
-    #     with open(path, "r") as f:
-    #         for line in f:
-    #             line = line.strip()
-    #             # {NAME} is start of a new object, so should indent
-    #             if line.startswith("{") and line.endswith("}"):
-    #                 section_name = line[1:-1]
-    #                 current_section[section_name] = {}
-    #                 section_stack.append(current_section)
-    #                 current_section = current_section[section_name]
-
-    #                 should_indent = True
-    #             # [NAME] is start of a section, so should not indent
-    #             elif line.startswith("[") and line.endswith("]"):
-    #                 section_name = line[1:-1]
-
-    #                 if not should_indent:
-    #                     if len(section_stack) > 1:
-    #                         current_section = section_stack.pop()
-
-    #                 current_section[section_name] = {}
-    #                 section_stack.append(current_section)
-    #                 current_section = current_section[section_name]
-
-    #                 should_indent = False
-    #             # = is a key value pair
-    #             elif "=" in line:
-    #                 key, value = line.split("=", 1)
-    #                 current_section[key.strip()] = value.strip()
-    #             elif line == "":
-    #                 if len(section_stack) > 1:
-    #                     current_section = section_stack.pop()
-
-    #     return meta_data
 
     def load_dicom(self, path):
         """Load a DICOM file
@@ -446,9 +351,7 @@ class DataLoader:
             path (str or os.PathLike): The path to the file or directory.
 
         Returns:
-            vol (numpy.ndarray, numpy.memmap, h5py._hl.dataset.Dataset, nibabel.arrayproxy.ArrayProxy or tuple): The loaded volume
-
-                If `virtual_stack=True`, returns `numpy.memmap`, `h5py._hl.dataset.Dataset` or `nibabel.arrayproxy.ArrayProxy` depending on file format
+            vol (numpy.ndarray): The loaded volume
                 If `return_metadata=True` and file format is either HDF5, NIfTI or TXRM/TXM/XRM, returns `tuple` (volume, metadata).
 
         Raises:
@@ -457,7 +360,7 @@ class DataLoader:
             MemoryError: If file size exceeds available memory and force_load is not set to True. In check_size function.
 
         Example:
-            loader = qim3d.io.DataLoader()
+            loader = fibretracker.io.DataLoader()
             data = loader.load("image.tif")
         """
 
@@ -515,31 +418,30 @@ def _get_h5_dataset_keys(f):
     return keys
 
 
-def _get_ole_offsets(ole):
-    slice_offset = {}
-    for stream in ole.listdir():
-        if stream[0].startswith("ImageData"):
-            sid = ole._find(stream)
-            direntry = ole.direntries[sid]
-            sect_start = direntry.isectStart
-            offset = ole.sectorsize * (sect_start + 1)
-            slice_offset[f"{stream[0]}/{stream[1]}"] = offset
+# def _get_ole_offsets(ole):
+#     slice_offset = {}
+#     for stream in ole.listdir():
+#         if stream[0].startswith("ImageData"):
+#             sid = ole._find(stream)
+#             direntry = ole.direntries[sid]
+#             sect_start = direntry.isectStart
+#             offset = ole.sectorsize * (sect_start + 1)
+#             slice_offset[f"{stream[0]}/{stream[1]}"] = offset
 
-    # sort dictionary after natural sorting (https://blog.codinghorror.com/sorting-for-humans-natural-sort-order/)
-    sorted_keys = sorted(
-        slice_offset.keys(),
-        key=lambda string_: [
-            int(s) if s.isdigit() else s for s in re.split(r"(\d+)", string_)
-        ],
-    )
-    slice_offset_sorted = {key: slice_offset[key] for key in sorted_keys}
+#     # sort dictionary after natural sorting (https://blog.codinghorror.com/sorting-for-humans-natural-sort-order/)
+#     sorted_keys = sorted(
+#         slice_offset.keys(),
+#         key=lambda string_: [
+#             int(s) if s.isdigit() else s for s in re.split(r"(\d+)", string_)
+#         ],
+#     )
+#     slice_offset_sorted = {key: slice_offset[key] for key in sorted_keys}
 
-    return slice_offset_sorted
+#     return slice_offset_sorted
 
 
 def load(
     path,
-    # virtual_stack=False,
     dataset_name=None,
     return_metadata=False,
     contains=None,
@@ -552,8 +454,6 @@ def load(
 
     Args:
         path (str or os.PathLike): The path to the file or directory.
-        virtual_stack (bool, optional): Specifies whether to use virtual
-            stack when loading files. Default is False.
         dataset_name (str, optional): Specifies the name of the dataset to be loaded
             in case multiple dataset exist within the same file. Default is None (only for HDF5 files)
         return_metadata (bool, optional): Specifies whether to return metadata or not. Default is False (only for HDF5 and TXRM/TXM/XRM files)
@@ -566,9 +466,7 @@ def load(
         to the DataLoader constructor.
 
     Returns:
-        vol (numpy.ndarray, numpy.memmap, h5py._hl.dataset.Dataset, nibabel.arrayproxy.ArrayProxy or tuple): The loaded volume
-
-            If `virtual_stack=True`, returns `numpy.memmap`, `h5py._hl.dataset.Dataset` or `nibabel.arrayproxy.ArrayProxy` depending on file format
+        vol (numpy.ndarray): The loaded volume
             If `return_metadata=True` and file format is either HDF5, NIfTI or TXRM/TXM/XRM, returns `tuple` (volume, metadata).
 
     Raises:
@@ -576,14 +474,21 @@ def load(
 
     Example:
         ```python
-        import qim3d
+        # Load volume from a single file
+        import fibretracker as ft
 
-        vol = fibretracker.io.load("path/to/image.tif")
+        vol = ft.io.load(data_path)
         ```
+        ```python
+        # Load a stack of TIFF files as a volume
+        import fibretracker as ft
+
+        vol = ft.io.load(data_path, contains='.tif')
+        ```
+
     """
 
     loader = DataLoader(
-        # virtual_stack=virtual_stack,
         dataset_name=dataset_name,
         return_metadata=return_metadata,
         contains=contains,
@@ -594,73 +499,25 @@ def load(
 
     data = loader.load(path)
 
-    # def log_memory_info(data):
-    #     mem = Memory()
-    #     log.info(
-    #         "Volume using %s of memory\n",
-    #         sizeof(data[0].nbytes if isinstance(data, tuple) else data.nbytes),
-    #     )
-    #     mem.report()
-
-    # if return_metadata and not isinstance(data, tuple):
-    #     log.warning("The file format does not contain metadata")
-
-    # if not virtual_stack:
-    #     log_memory_info(data)
-    # else:
-    #     # Only log if file type is not a np.ndarray, i.e., it is some kind of memmap object
-    #     if not isinstance(
-    #         type(data[0]) if isinstance(data, tuple) else type(data), np.ndarray
-    #     ):
-    #         log.info("Using virtual stack")
-    #     else:
-    #         log.warning("Virtual stack is not supported for this file format")
-    #         log_memory_info(data)
-
     return data
 
-
-# class ImgExamples:
-#     """Image examples
-
-#     Attributes:
-#         blobs_256x256 (numpy.ndarray): A 2D image of blobs.
-#         blobs_256x256x256 (numpy.ndarray): A 3D volume of blobs.
-#         bone_128x128x128 (numpy.ndarray): A 3D volume of bone.
-#         cement_128x128x128 (numpy.ndarray): A 3D volume of cement.
-#         fly_150x256x256 (numpy.ndarray): A 3D volume of a fly.
-#         NT_10x200x100 (numpy.ndarray): A 3D volume of a neuron.
-#         NT_128x128x128 (numpy.ndarray): A 3D volume of a neuron.
-#         shell_225x128x128 (numpy.ndarray): A 3D volume of a shell.
-
-#     Tip:
-#         Call `qim3d.examples.<name>` to access the image examples easily as this class is instantiated when importing `qim3d`
-
-#     Example:
-#         ```python
-#         import qim3d
-
-#         data = qim3d.examples.blobs_256x256
-#         ```
-
-
-#     """
-
-#     def __init__(self):
-#         img_examples_path = Path(qim3d.__file__).parents[0] / "img_examples"
-#         img_paths = list(img_examples_path.glob("*.tif"))
-
-
-#         update_dict = {path.stem : load(path) for path in img_paths}
-#         self.__dict__.update(update_dict)
-
-def normalize_volume(vol):
-    """Normalize the volume to the range [0, 1].
+def normalize(
+        vol: np.ndarray
+        ):
+    """Normalize the volume to the range [0, 1] using min-max scaling.
 
     Args:
         vol (numpy.ndarray): The volume to normalize.
 
     Returns:
-        numpy.ndarray: The normalized volume.
+        norm_vol (numpy.ndarray): The normalized volume.
+
+    Example:
+        ```python
+        import fibretracker as ft
+
+        norm_vol = ft.io.normalize(vol)
+        ```
     """
-    return (vol - np.min(vol)) / (np.max(vol) - np.min(vol))
+    norm_vol = (vol - np.min(vol)) / (np.max(vol) - np.min(vol))
+    return norm_vol
