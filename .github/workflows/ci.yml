@@ -24,7 +24,7 @@ jobs:
       - name: Build docs
         run: mkdocs build
 
-      - Install Modules
+      - name: Install Modules
         run: pip install -U pip setuptools wheel
 
       - name: Deploy docs
