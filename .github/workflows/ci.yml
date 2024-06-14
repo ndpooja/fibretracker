@@ -6,26 +6,26 @@ on:
       - main
 permissions:
   contents: write
+
 jobs:
   deploy:
+    name: Deploy docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          python-version: 3.x
-      - uses: actions/cache@v2
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          key: ${{ github.ref }}
-          path: .cache
+          python-version: 3.11
+          cache: 'pip'
+          cache-dependency-path: setup.py
+
       - name: Install dependencies
-        run: pip install -r requirements_docs.txt
-
-      - name: Build docs
-        run: mkdocs build
-
-      - name: Install Modules
-        run: pip install -U pip setuptools wheel
+        run: pip install -r requirements.txt
 
       - name: Deploy docs
         run: mkdocs gh-deploy --force
