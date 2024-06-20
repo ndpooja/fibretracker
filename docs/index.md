@@ -17,11 +17,18 @@ Activate the environment by running
 conda activate fibretracker
 ```
 
+To read .txm file, install `dxchange` using `conda` [install before fibretracker module to avoid version conflicts and related error]
+
+```
+conda install -c conda-forge dxchange
+```
+
 Install the FibreTracker tool using `pip`
 
 ```
 pip install fibretracker
 ```
+
 
 Go to Example and run the notebook with `fibretracker` enviroment
 

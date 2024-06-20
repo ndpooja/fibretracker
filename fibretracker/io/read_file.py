@@ -213,8 +213,8 @@ class DataLoader:
 
         vol = np.copy(vol)  # Copy to memory
 
-        print(f"Found %s file(s)", len(tiff_stack))
-        print(f"Loaded shape: %s", vol.shape)
+        print(f"Found {len(tiff_stack)} file(s)")
+        print(f"Loaded shape: {vol.shape}")
 
         return vol
 
@@ -245,6 +245,7 @@ class DataLoader:
             vol.squeeze()
         )  # In case of an XRM file, the third redundant dimension is removed
 
+        print(f"Loaded shape: {vol.shape}")
         if self.return_metadata:
             return vol, metadata
         else:
@@ -269,6 +270,7 @@ class DataLoader:
 
         # if not self.virtual_stack:
         vol = np.asarray(vol, dtype=data.get_data_dtype())
+        print(f"Loaded shape: {vol.shape}")
 
         if self.return_metadata:
             metadata = {}
@@ -336,7 +338,7 @@ class DataLoader:
         dicom_list = [pydicom.dcmread(os.path.join(path, f)) for f in dicom_stack]
         # vol contains the pixel data
         vol = np.stack([dicom.pixel_array for dicom in dicom_list], axis=0)
-
+        print(f"Loaded shape: {vol.shape}")
         if self.return_metadata:
             return vol, dicom_list
         else:
