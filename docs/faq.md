@@ -8,5 +8,8 @@ Make sure to run **%matplotlib widget** alongwith other library
 
 models.track_fibres either requires detected coordinates **coords** or normalized volume **vol**. It is suggested to use both if calculated coords available during smoothening to avoid re-compute.
 
+## Can I use it locally on the laptop or PC?
+
+Yes, this library works locally and does not need very high computing power to use it. Load depends on memory size of data which you are going to use. 
 
 <p><small> FAQ will be updated based on user experiences
