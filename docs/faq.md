@@ -12,4 +12,8 @@ models.track_fibres either requires detected coordinates **coords** or normalize
 
 Yes, this library works locally and does not need very high computing power to use it. Load depends on memory size of data which you are going to use. 
 
+# Contact
+Please fill attached form, if the provided details does not solve your issue or would like to give any other suggestions. [Link](https://forms.office.com/e/rqSYnwZ17H/)
+
 <p><small> FAQ will be updated based on user experiences
+
