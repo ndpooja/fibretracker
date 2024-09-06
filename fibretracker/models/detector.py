@@ -22,7 +22,7 @@ def gauss_filter(
         ```python
         import fibretracker as ft
 
-        vol = ft.detector.gauss_filter(std=2.5)
+        vol = ft.models.gauss_filter(std=2.5)
         ```
         
     '''
@@ -54,7 +54,7 @@ def blob_centre_detector(
         ```python
         import fibretracker as ft
 
-        vol = ft.detector.blob_centre_detector(im, std=2.5, min_distance=3, threshold_abs=0.4)
+        vol = ft.models.blob_centre_detector(im, std=2.5, min_distance=3, threshold_abs=0.4)
         ```
 
     '''
@@ -86,7 +86,7 @@ def avg_fibre_coord(
         ```python
         import fibretracker as ft
 
-        avg_coord = ft.detector.avg_fib_coord(pred_coord, im, window_size)
+        avg_coord = ft.models.avg_fib_coord(pred_coord, im, window_size)
         ```
 
     '''
@@ -134,7 +134,7 @@ def get_fibre_coords(
         ```python
         import fibretracker as ft
 
-        vol = ft.detector.get_fib_coords(vol, std=2.5, min_distance=3, threshold_abs=0.4)
+        vol = ft.models.get_fib_coords(vol, std=2.5, min_distance=3, threshold_abs=0.4)
         ```
 
     '''
